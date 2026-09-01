@@ -56,6 +56,9 @@ LockWorker::LockWorker(SessionBaseModel *const model, QObject *parent)
 
     m_resetSessionTimer->setInterval(15000);
 
+    // On standby resume, ActiveChanged and PrepareForSleep are reported back to back;
+    // the 300ms single-shot timer coalesces signal-triggered authentication requests
+    // that occur within 300ms.
     m_wakeUpAuthTimer->setSingleShot(true);
     m_wakeUpAuthTimer->setInterval(300);
     connect(m_wakeUpAuthTimer, &QTimer::timeout, this, [this](){
