@@ -202,9 +202,12 @@ QString CenterTopWidget::getRegionFormatConfigPath(const User *user) const
                  qPrintable(QDBusConnection::systemBus().lastError().message()));
         return QString();
     }
+    // Use NoAppId (empty string) so the lockscreen acquires the same DConfig
+    // manager path as the control center (which uses DConfig::createGeneric),
+    // ensuring valueChanged signals propagate across both sides.
     QDBusReply<QDBusObjectPath> dbusReply = configInter.call("acquireManagerV2",
                                                              (uint)user->uid(),
-                                                             QString(QCoreApplication::applicationName()),
+                                                             QString(),
                                                              QString("org.deepin.region-format"),
                                                              QString(""));
     if (configInter.lastError().isValid() ) {
